@@ -1,3 +1,4 @@
+"""Jake Ritter - gth675r - 902036712"""
 """Problem Set 4: Geometry."""
 
 import numpy as np
@@ -116,7 +117,6 @@ def get_residuals(pts2d, pts2d_projected):
         residuals: residual error for each point (L2 distance between observed and projected 2D points)
     """
     residuals = np.linalg.norm(pts2d - pts2d_projected, axis=1)
-    print residuals
     # TODO: Your code here
     return residuals
 
@@ -154,12 +154,15 @@ def calibrate_camera(pts3d, pts2d):
             #rest are for doing the projection
             proj_point_dexes = all_pt_dexes[5:]
 
-            proj_pts2d = pts2d[proj_point_dexes]
-            proj_pts3d = pts3d[proj_point_dexes]
-            M, error= solve_least_squares(proj_pts3d, proj_pts2d)
+            proj_pts2d_proj = pts2d[proj_point_dexes]
+            proj_pts3d_proj  = pts3d[proj_point_dexes]
+            M, error= solve_least_squares(proj_pts3d_proj, proj_pts2d_proj)
 
-            avg_residual = np.average(get_residuals(proj_pts2d,project_points(proj_pts3d, M)))
+            proj_pts2d_test = pts2d[test_point_dexes]
+            proj_pts3d_test = pts3d[test_point_dexes]
 
+            avg_residual = np.average(get_residuals(proj_pts2d_test, project_points(proj_pts3d_test, M)))
+            print str(k) + " " + str(avg_residual)
             if lowest_avg_residual_per_k is None or avg_residual < lowest_avg_residual_per_k:
                 lowest_avg_residual_per_k = avg_residual
                 best_m_error_per_k = (M,error)
@@ -167,6 +170,7 @@ def calibrate_camera(pts3d, pts2d):
         if lowest_avg_residual is None or lowest_avg_residual_per_k  < lowest_avg_residual:
             lowest_avg_residual = lowest_avg_residual_per_k
             best_m_error = best_m_error_per_k
+
 
 
     # TODO: Your code here
@@ -190,8 +194,6 @@ def compute_fundamental_matrix(pts2d_a, pts2d_b):
     N = pts2d_a.shape[0]
     A = np.zeros((N,8))
     B = np.ones((N,1)) * -1
-    print B
-
 
     for dex in range(0, N):
         u = pts2d_a[dex][0]
@@ -209,10 +211,106 @@ def compute_fundamental_matrix(pts2d_a, pts2d_b):
     m_prime[-1] = 1
     F = m_prime.reshape((3, 3))
 
-
-    print F
     return F
 
+def get_trans_and_F(pts2d_a, pts2d_b):
+    #
+    # Compute T_a
+    #
+    T_mean = np.zeros((3, 3), dtype=np.float)
+    np.fill_diagonal(T_mean, 1.0)
+    u_mean = np.mean(pts2d_a[:, 0:1])
+    v_mean = np.mean(pts2d_a[:, 1:2])
+    T_mean[0][2] = -u_mean
+    T_mean[1][2] = -v_mean
+
+    T_scale = np.zeros((3, 3),dtype=np.float)
+    T_scale[0][0] = 1.0 / np.std(pts2d_a[:, 0:1] - u_mean)
+    T_scale[1][1] = 1.0 / np.std(pts2d_a[:, 1:2] - v_mean)
+    T_scale[2][2] = 1.0
+
+    T_a = np.dot(T_scale, T_mean)
+
+
+    new_pts_a = np.concatenate((pts2d_a, np.ones((pts2d_a.shape[0], 1))), 1)
+    pts_a_transformed = pts2d_a.copy()
+    for dex in range(pts2d_a.shape[0]):
+        tmp = np.dot(T_a, new_pts_a[dex])
+        pts_a_transformed[dex] = tmp[:-1]
+
+    #
+    # Compute T_b
+    #
+    T_mean = np.zeros((3, 3), dtype=np.float)
+    np.fill_diagonal(T_mean, 1.0)
+    u_mean = np.mean(pts2d_b[:, 0:1])
+    v_mean = np.mean(pts2d_b[:, 1:2])
+    T_mean[0][2] = -u_mean
+    T_mean[1][2] = -v_mean
+
+    T_scale = np.zeros((3, 3), dtype=np.float)
+    T_scale[0][0] = 1.0 / np.std(pts2d_b[:, 0:1] - u_mean)
+    T_scale[1][1] = 1.0 / np.std(pts2d_b[:, 1:2] - v_mean)
+    T_scale[2][2] = 1.0
+
+    T_b = np.dot(T_scale, T_mean)
+
+    new_pts_b = np.concatenate((pts2d_b, np.ones((pts2d_b.shape[0], 1))), 1)
+    pts_b_transformed = pts2d_b.copy()
+    for index in range(pts2d_b.shape[0]):
+        tmp = np.dot(T_b, new_pts_b[index])
+        pts_b_transformed[index] = tmp[:-1]
+
+    return T_a, T_b, compute_fundamental_matrix(pts_a_transformed, pts_b_transformed)
+
+def drawLines(F, filename):
+    pic_b = cv2.imread("input/pic_b.jpg")
+    pic_a = cv2.imread("input/pic_a.jpg")
+    pts2d_pic_a = read_points(os.path.join(input_dir, PIC_A_2D))
+    pts2d_pic_b = read_points(os.path.join(input_dir, PIC_B_2D))
+
+    num_row = pic_b.shape[0]
+    num_col = pic_b.shape[1]
+
+
+    lastColumn_a = np.ones((pts2d_pic_a.shape[0], 1))
+    newPoints_pic_a = np.concatenate((pts2d_pic_a, lastColumn_a), 1)
+    lastColumn_b = np.ones((pts2d_pic_b.shape[0], 1))
+    newPoints_pic_b = np.concatenate((pts2d_pic_b, lastColumn_b), 1)
+
+    for point in newPoints_pic_a:
+        l_b = np.dot(F, point)
+        l_L = np.cross([0, 0, 1],[0, num_row, 1])
+        l_R = np.cross([num_col,0, 1], [num_col, num_row, 1])
+        P_i_L = np.cross(l_b, l_L)
+        P_i_R = np.cross(l_b, l_R)
+
+        x1 = int(P_i_L[0] / P_i_L[2])
+        y1 = int(P_i_L[1] / P_i_L[2])
+        x2 = int(P_i_R[0] / P_i_R[2])
+        y2 = int(P_i_R[1] / P_i_R[2])
+
+        cv2.line(pic_b, (x1,y1),(x2,y2), (0,0,255), 1)
+
+
+    F = np.transpose(F)
+    for point in newPoints_pic_b:
+        l_b = np.dot(F, point)
+        l_L = np.cross([0, 0, 1],[0, num_row, 1])
+        l_R = np.cross([num_col,0, 1], [num_col, num_row, 1])
+        P_i_L = np.cross(l_b, l_L)
+        P_i_R = np.cross(l_b, l_R)
+
+
+        x1 = int(P_i_L[0] / P_i_L[2])
+        y1 = int(P_i_L[1] / P_i_L[2])
+        x2 = int(P_i_R[0] / P_i_R[2])
+        y2 = int(P_i_R[1] / P_i_R[2])
+
+        cv2.line(pic_a, (x1,y1),(x2,y2), (0,0,255), 1)
+
+    cv2.imwrite("output/" + filename + "-1.png", pic_a)
+    cv2.imwrite("output/" + filename + "-2.png", pic_b)
 
 # Driver code
 def main():
@@ -226,16 +324,18 @@ def main():
     # Solve for transformation matrix using least squares
     M, error = solve_least_squares(pts3d_norm, pts2d_norm_pic_a)  # TODO: implement this
 
+    print "basic M"
+    print M
+
     # Project 3D points to 2D
     pts2d_projected = project_points(pts3d_norm, M)  # TODO: implement this
-
+    print "Last point"
+    print pts2d_projected[-1]
     # Compute residual error for each point
     residuals = get_residuals(pts2d_norm_pic_a, pts2d_projected)  # TODO: implement this
-
-    # TODO: Print the <u, v> projection of the last point, and the corresponding residual
-    print pts2d_projected[-1]
+    print "last residual"
     print residuals[-1]
-
+    # TODO: Print the <u, v> projection of the last point, and the corresponding residual
     # 1b
     # Read points
     pts3d = read_points(os.path.join(input_dir, SCENE))
@@ -245,6 +345,8 @@ def main():
     # TODO: Use the functions from 1a to implement calibrate_camera() and find the best transform (bestM)
     bestM, error = calibrate_camera(pts3d, pts2d_pic_b)
 
+    print "best M"
+    print bestM
     # 1c
     # TODO: Compute the camera location using bestM
 
@@ -252,79 +354,52 @@ def main():
     Q = bestM[:3,:3]
     m4 = bestM[:3, -1].reshape((3,1))
     center = -1 * np.dot(np.linalg.inv(Q), m4)
-    print center
 
+    print "Center"
+    print center
     # 2a
     # TODO: Implement compute_fundamental_matrix() to find the raw fundamental matrix
     pts2d_pic_a = read_points(os.path.join(input_dir, PIC_A_2D))
     F = compute_fundamental_matrix(pts2d_pic_a, pts2d_pic_b)
 
+    print "old F"
+    print F
     # 2b
     # TODO: Reduce the rank of the fundamental matrix
     u,s,v = np.linalg.svd(F)
     s[s.argmin()] = 0
     s = np.diag(s)
     newF = np.dot(np.dot(u,s),v)
-
-
-    print "RANK DOWN"
+    print "new F"
     print newF
+
     # 2c
     # TODO: Draw epipolar lines
+    drawLines(newF, 'ps4-2-c' )
 
 
 
-    pic_b = cv2.imread("input/pic_b.jpg")
-    pic_a = cv2.imread("input/pic_a.jpg")
+    # 2d
+    """
+    Create two matrices Ta and Tb for the set of points defined in the
+    files pts2d-pic_a.txt and pts2d-pic_b.txt respectively.
+    Use these matrices to transform the two sets of points.
+    Then, use these normalized points to create a new Fundamental matrix F.
+    Compute it as above, including making the smaller singular value zero.
 
-    print pic_b.shape
+    Output:
+    - The matrices Ta, Tb and F [text response]
 
-    num_row = pic_b.shape[0]
-    num_col = pic_b.shape[1]
-
-
-    lastColumn = np.ones((pts2d_pic_a.shape[0], 1))
-    newPoints_pic_a = np.concatenate((pts2d_pic_a, lastColumn), 1)
-
-    for point in newPoints_pic_a:
-        l_b = np.dot(newF, point)
-        l_L = np.cross([0, 0, 1],[0, num_row, 1])
-        l_R = np.cross([num_col,0, 1], [num_col, num_row, 1])
-        P_i_L = np.cross(l_b, l_L)
-        P_i_R = np.cross(l_b, l_R)
-
-        print "edges"
-        print l_L
-        print l_R
-
-        print P_i_L
-        print P_i_R
-
-        x1 = int(P_i_L[0] / P_i_L[2])
-        y1 = int(P_i_L[1] / P_i_L[2])
-        x2 = int(P_i_R[0] / P_i_R[2])
-        y2 = int(P_i_R[1] / P_i_R[2])
-
-
-        print "points"
-        print ((x1, y1),(x2,y2))
-        cv2.circle(pic_a, (int(point[0]), int(point[1])), 4, (0,255,0), 1)
-        cv2.line(pic_b, (x1,y1),(x2,y2), (255,0,0), 1)
-    cv2.imshow("foo", pic_b)
-    cv2.imshow("bar", pic_a)
-    input()
-
-    # l_edge = np.cross(np.array([0,0]), np.array([0,pic_b.shape[0]]))
-    # print l_edge
-    # r_edge = np.cross(np.array((pic_b.shape[1], 0)), np.array((pic_b.shape[1],pic_b.shape[0])))
-    # print r_edge
-    #
-    # print testpoint
-    # li = np.dot(F,testpoint)
-    # print li
-    #
-    # line = np.cross(li, l_edge)
-
+    """
+    T_a, T_b, F_hat = get_trans_and_F(pts2d_pic_a, pts2d_pic_b)
+    print "T stuff"
+    print T_a
+    print T_b
+    print F_hat
+    F = np.dot(np.dot(T_b.T, F_hat), T_a)
+    print "final F"
+    print F
+    drawLines(F, "ps4-2-e")
 
 if __name__ == '__main__':
     main()
