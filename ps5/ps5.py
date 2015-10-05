@@ -775,7 +775,6 @@ def main():
     affine_matrix, matchSets = compute_affine_RANSAC(simA_kp, simB_kp, sim_matches, 10, 14)
     print "affine matrix"
     print affine_matrix
-    print sim_matrix
     print len(sim_matches)
     print len(matchSets)
     ransac_sim_match = draw_matches(simA, simB, simA_kp, simB_kp, matchSets)
@@ -789,17 +788,19 @@ def main():
     # simA = cv2.imread(os.path.join(input_dir, "simA.jpg"), cv2.IMREAD_GRAYSCALE).astype(np.uint8)
     rand = np.zeros((simB.shape[0], simB.shape[1]))
     out_warp  = cv2.invertAffineTransform(sim_matrix)
+    write_image(out_warp, "ps5-3-d-1.png")
     warped_image = cv2.warpAffine(simB.astype(np.uint8),out_warp, (simB.shape[1], simB.shape[0]), flags=cv2.INTER_LINEAR)
     write_image(warped_image, "sim_warped_simB.png")
     merged = cv2.merge((rand.astype(np.uint8),warped_image.astype(np.uint8),simA.astype(np.uint8)))
-    write_image(merged, "ps5-3-d-1.png")
+    write_image(merged, "ps5-3-d-2.png")
 
 
     out_warp  = cv2.invertAffineTransform(affine_matrix)
+    write_image(out_warp, "ps5-3-e-1.png")
     warped_image = cv2.warpAffine(simB.astype(np.uint8),out_warp, (simB.shape[1], simB.shape[0]), flags=cv2.INTER_LINEAR)
     write_image(warped_image, "affine_warped_simB.png")
     merged = cv2.merge((rand.astype(np.uint8),warped_image.astype(np.uint8),simA.astype(np.uint8)))
-    write_image(merged, "ps5-3-e-1.png")
+    write_image(merged, "ps5-3-e-2.png")
 
 
 
