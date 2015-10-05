@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec7546da-98e3-4f40-ae12-741057e403f3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ps4/ps4.py" afterPath="$PROJECT_DIR$/../ps4/ps4.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ps4/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../ps4/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ps5.py" afterPath="$PROJECT_DIR$/ps5.py" />
     </list>
     <ignored path="ps5.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,15 +23,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ps5-2-b-2.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/output/ps5-2-b-2.png">
+      <file leaf-file-name="ps5-2-b-1.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output/ps5-2-b-1.png">
           <provider selected="true" editor-type-id="images">
             <state />
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ps5-3-a-1.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/output/ps5-3-a-1.png">
+      <file leaf-file-name="ps5-2-b-2.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output/ps5-2-b-2.png">
           <provider selected="true" editor-type-id="images">
             <state />
           </provider>
@@ -45,8 +44,39 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="ps5-3-a-1.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output/ps5-3-a-1.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="ps5-3-c-2.png" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/output/ps5-3-c-2.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ps5-3-d-1.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output/ps5-3-d-1.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output/README">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ps5-3-e-1.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output/ps5-3-e-1.png">
           <provider selected="true" editor-type-id="images">
             <state />
           </provider>
@@ -55,8 +85,8 @@
       <file leaf-file-name="ps5.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ps5.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5897436">
-              <caret line="459" column="0" selection-start-line="459" selection-start-column="0" selection-end-line="459" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7692308">
+              <caret line="781" column="50" selection-start-line="781" selection-start-column="50" selection-end-line="781" selection-end-column="50" />
               <folding>
                 <element signature="e#44#62#0" expanded="true" />
               </folding>
@@ -64,36 +94,8 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ps5-1-c-2.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/output/ps5-1-c-2.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ps5-1-c-3.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/output/ps5-1-c-3.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ps5-2-a-1.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/output/ps5-2-a-1.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ps5-2-a-2.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/output/ps5-2-a-2.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ps5-2-b-1.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/output/ps5-2-b-1.png">
+      <file leaf-file-name="ps5-1-c-1.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output/ps5-1-c-1.png">
           <provider selected="true" editor-type-id="images">
             <state />
           </provider>
@@ -115,9 +117,9 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="708" />
+    <option name="x" value="79" />
     <option name="y" value="23" />
-    <option name="width" value="1277" />
+    <option name="width" value="1466" />
     <option name="height" value="873" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -371,7 +373,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="708" y="23" width="1277" height="873" extended-state="0" />
+    <frame x="79" y="23" width="1466" height="873" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -379,12 +381,12 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.329602" sideWeight="0.4972592" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24980423" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21759892" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2375622" sideWeight="0.49412686" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2375622" sideWeight="0.494543" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2375622" sideWeight="0.50587314" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2375622" sideWeight="0.50545704" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -416,16 +418,6 @@
           <caret line="85" column="15" selection-start-line="85" selection-start-column="15" selection-end-line="85" selection-end-column="15" />
           <folding />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/input/simB.jpg">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/input/simA.jpg">
-      <provider selected="true" editor-type-id="images">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/input/check_rot.bmp">
@@ -496,35 +488,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/rot-test-2.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/rot-test.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/README">
+    <entry file="file:///usr/local/lib/python2.7/site-packages/numpy/linalg/linalg.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="380" column="0" selection-start-line="380" selection-start-column="0" selection-end-line="380" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-1-a-1.png">
+    <entry file="file://$PROJECT_DIR$/input/simB.jpg">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-1-a-2.png">
+    <entry file="file://$PROJECT_DIR$/input/simA.jpg">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-1-c-1.png">
+    <entry file="file://$PROJECT_DIR$/output/ps5-2-a-2.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/ps5-1-b-4.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
@@ -534,12 +521,12 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-1-b-3.png">
+    <entry file="file://$PROJECT_DIR$/output/ps5-1-a-2.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-1-c-4.png">
+    <entry file="file://$PROJECT_DIR$/output/ps5-1-a-1.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
@@ -549,7 +536,7 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-1-b-4.png">
+    <entry file="file://$PROJECT_DIR$/output/ps5-1-b-3.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
@@ -564,17 +551,12 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/output/ps5-1-c-4.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/output/ps5-2-a-1.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-2-a-2.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-3-c-2.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
@@ -584,7 +566,25 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/output/ps5-1-c-1.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/output/ps5-2-b-2.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/README">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/ps5-3-d-1.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
@@ -599,10 +599,20 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/output/ps5-3-c-2.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/ps5-3-e-1.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ps5.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5897436">
-          <caret line="459" column="0" selection-start-line="459" selection-start-column="0" selection-end-line="459" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.7692308">
+          <caret line="781" column="50" selection-start-line="781" selection-start-column="50" selection-end-line="781" selection-end-column="50" />
           <folding>
             <element signature="e#44#62#0" expanded="true" />
           </folding>

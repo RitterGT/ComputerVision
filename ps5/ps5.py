@@ -205,7 +205,7 @@ def gradient_angle(Ix, Iy):
 
     # TODO: Your code here
     # Note: +ve X axis points to the right (0 degrees), +ve Y axis points down (90 degrees)
-    angle = np.degrees(np.arctan2(Iy, Ix))
+    angle = np.degrees(np.arctan2(Ix, Iy))
 
     return angle
 
@@ -251,7 +251,7 @@ def get_descriptors(image, keypoints):
     # TODO: Your code here
     # Note: You can use OpenCV's SIFT.compute() method to extract descriptors, or write your own!
     sift = cv2.SIFT()
-    features, descriptors = sift.compute(image, keypoints)
+    features, descriptors = sift.compute(image.astype(np.uint8), keypoints)
 
     return descriptors
 
@@ -387,53 +387,105 @@ def compute_translation_RANSAC(kp1, kp2, matches, threshold = 20):
     return maxKey, buckets[maxKey]
 
 
-def compute_similarity_RANSAC(kp1, kp2, matches, threshold = 20):
-    """Compute best similarity transform using RANSAC given keypoint matches.
+# def compute_similarity_RANSAC(kp1, kp2, matches, threshold = 20):
+#     """Compute best similarity transform using RANSAC given keypoint matches.
+#
+#     Parameters
+#     ----------
+#         kp1: list of keypoints (cv2.KeyPoint objects) found in image1
+#         kp2: list of keypoints (cv2.KeyPoint objects) found in image2
+#         matches: list of matches (as cv2.DMatch objects)
+#
+#     Returns
+#     -------
+#         transform: similarity transform matrix, NumPy array of shape (2, 3)
+#         good_matches: consensus set of matches that agree with this transform
+#     """
+#
+#     # TODO: Your code here
+#     # for each pair of matches, compute a tranform, add to a dict
+#
+#
+#     # for each pair of matches, compute the transform - for each bucket, calculate the distance, increment if 'close'
+#
+#     buckets = {}
+#     maxValue = 0
+#     maxKey = None
+#
+#     for pair in itertools.product(matches, repeat=2):
+#         if pair[0] == pair[1]:
+#             continue
+#
+#         transform = tuple(map(tuple, calc_transform_similarity(pair, kp1, kp2)))
+#
+#         #put each transform into a bucket.
+#         if buckets.get(transform) is None:
+#             buckets[transform] = []
+#             buckets[transform].append(pair)
+#
+#     for pair in itertools.product(matches, repeat=2):
+#         if pair[0] == pair[1]:
+#             continue
+#
+#         transform = calc_transform_similarity(pair, kp1, kp2)
+#         for key in buckets.keys():
+#             if np.linalg.norm(np.array(key) - transform) < threshold:
+#                 buckets[key].append(pair)
+#                 if len(buckets[key]) > maxValue:
+#                     maxValue = len(buckets[key])
+#                     maxKey = key
+#
+#     # #return translation, good_matches
+#     # a = maxKey[0]
+#     # b = maxKey[1]
+#     # c = maxKey[2]
+#     # d = maxKey[3]
+#     # similarity_transform = np.array([[a, -b, c],[b, a, d]])
+#     matches = []
+#
+#     for pair in buckets[maxKey]:
+#         matches.append(pair[0])
+#         matches.append(pair[1])
+#
+#     return maxKey, matches
 
-    Parameters
-    ----------
-        kp1: list of keypoints (cv2.KeyPoint objects) found in image1
-        kp2: list of keypoints (cv2.KeyPoint objects) found in image2
-        matches: list of matches (as cv2.DMatch objects)
 
-    Returns
-    -------
-        transform: similarity transform matrix, NumPy array of shape (2, 3)
-        good_matches: consensus set of matches that agree with this transform
-    """
+def compute_similarity_RANSAC(kp1, kp2, matches, threshold = 20, maxConsensus = 15):
 
-    # TODO: Your code here
-    # for each pair of matches, compute a tranform, add to a dict
-
-
-    # for each pair of matches, compute the transform - for each bucket, calculate the distance, increment if 'close'
+    np.random.shuffle(matches)
 
     buckets = {}
     maxValue = 0
     maxKey = None
-
-    for pair in itertools.product(matches, repeat=2):
-        if pair[0] == pair[1]:
-            continue
-
-        transform = tuple(map(tuple, calc_transform_similarity(pair, kp1, kp2)))
-
-        #put each transform into a bucket.
-        if buckets.get(transform) is None:
-            buckets[transform] = []
-            buckets[transform].append(pair)
+    maxTransform = None
 
     for pair in itertools.product(matches, repeat=2):
         if pair[0] == pair[1]:
             continue
 
         transform = calc_transform_similarity(pair, kp1, kp2)
-        for key in buckets.keys():
-            if np.linalg.norm(np.array(key) - transform) < threshold:
-                buckets[key].append(pair)
-                if len(buckets[key]) > maxValue:
-                    maxValue = len(buckets[key])
+        #print transform
+
+        key = tuple(map(tuple, transform))
+        buckets[key] = []
+        consensusCount = 0
+        for match in matches:
+            query_pt = np.array(kp1[match.queryIdx].pt)
+            train_pt = np.array(kp2[match.trainIdx].pt)
+
+            new_pt = np.dot(transform, np.append(query_pt, 1))
+            diff = np.linalg.norm(new_pt - train_pt)
+            if diff < threshold:
+                consensusCount += 1
+                buckets[key].append(match)
+                if consensusCount > maxValue:
+                    maxValue = consensusCount
                     maxKey = key
+                    maxTransform = transform
+                    print "New Max Sim: " + str(consensusCount)
+
+        if consensusCount > maxConsensus:
+            break
 
     # #return translation, good_matches
     # a = maxKey[0]
@@ -441,13 +493,13 @@ def compute_similarity_RANSAC(kp1, kp2, matches, threshold = 20):
     # c = maxKey[2]
     # d = maxKey[3]
     # similarity_transform = np.array([[a, -b, c],[b, a, d]])
-    matches = []
+    matches = buckets[maxKey]
+    print "MATCHES:"
+    print matches
+    print len(matches)
 
-    for pair in buckets[maxKey]:
-        matches.append(pair[0])
-        matches.append(pair[1])
+    return maxTransform, matches
 
-    return maxKey, matches
 
 def calc_transform_similarity(pair, kp1, kp2):
     match1 = pair[0]
@@ -462,20 +514,16 @@ def calc_transform_similarity(pair, kp1, kp2):
     x_prime, y_prime = np.array(kp2[match2.trainIdx].pt)
 
     b = np.array([u_prime, v_prime, x_prime, y_prime])
-   # a = np.array([[u, v, x, y], [-v, u, -y, x], [1, 0, 1, 0], [0, 1, 0, 1]])
-    a = np.array([[u, -v, x, -y], [v, u, y, x], [1, 0, 1, 0], [0, 1, 0, 1]])
+    a = np.array([[u, -v, 1, 0], [v, u, 0, 1], [x, -y, 1, 0], [y, x, 0, 1]])
 
-    transform = np.linalg.solve(a,b)
+    a,b,c,d = np.linalg.solve(a, b)
 
-    a = transform[0]
-    b = transform[1]
-    c = transform[2]
-    d = transform[3]
     similarity_transform = np.array([[a, -b, c],[b, a, d]])
 
     return similarity_transform
 
-def compute_affine_RANSAC(kp1, kp2, matches, threshold = 20):
+def compute_affine_RANSAC(kp1, kp2, matches, threshold = 20, maxConsensus = 15):
+
     """Compute best similarity transform using RANSAC given keypoint matches.
 
     Parameters
@@ -495,6 +543,7 @@ def compute_affine_RANSAC(kp1, kp2, matches, threshold = 20):
 
 
     # for each pair of matches, compute the transform - for each bucket, calculate the distance, increment if 'close'
+    np.random.shuffle(matches)
 
     buckets = {}
     maxValue = 0
@@ -504,41 +553,37 @@ def compute_affine_RANSAC(kp1, kp2, matches, threshold = 20):
         if triple[0] == triple[1] or triple[0] == triple[2] or triple[1] == triple[2]:
             continue
 
-        transform = tuple(calc_transform_affine(triple, kp1, kp2))
-
-        #put each transform into a bucket.
-        if buckets.get(transform) is None:
-            buckets[transform] = []
-            buckets[transform].append(triple)
-
-    for triple in itertools.product(matches, repeat=3):
-        if triple[0] == triple[1] or triple[0] == triple[2] or triple[1] == triple[2]:
-            continue
 
         transform = calc_transform_affine(triple, kp1, kp2)
-        for key in buckets.keys():
-            if np.linalg.norm(np.array(key) - transform) < threshold:
-                buckets[key].append(triple)
-                if len(buckets[key]) > maxValue:
-                    maxValue = len(buckets[key])
+        if transform is None:
+            continue
+
+       # print transform
+
+        key = tuple(map(tuple, transform))
+        buckets[key] = []
+        consensusCount = 0
+        for match in matches:
+            query_pt = np.array(kp1[match.queryIdx].pt)
+            train_pt = np.array(kp2[match.trainIdx].pt)
+
+            new_pt = np.dot(transform, np.append(query_pt, 1))
+            diff = np.linalg.norm(new_pt - train_pt)
+            if diff < threshold:
+                consensusCount += 1
+                buckets[key].append(match)
+                if consensusCount > maxValue:
+                    maxValue = consensusCount
                     maxKey = key
+                    maxTransform = transform
+                    print "New Max Affine: " + str(consensusCount)
 
-    #return translation, good_matches
-    a = maxKey[0]
-    b = maxKey[1]
-    c = maxKey[2]
-    d = maxKey[3]
-    e = maxKey[4]
-    f = maxKey[5]
+        if consensusCount > maxConsensus:
+            break
 
-    similarity_transform = np.array([[a, b, c],[d, e, f]])
-    matches = []
+    good_matches = buckets[maxKey]
 
-    for pair in buckets[maxKey]:
-        matches.append(pair[0])
-        matches.append(pair[1])
-
-    return similarity_transform, matches
+    return maxTransform, good_matches
 
 
 def calc_transform_affine(triple, kp1, kp2):
@@ -558,13 +603,29 @@ def calc_transform_affine(triple, kp1, kp2):
     p_prime, q_prime = np.array(kp2[match3.trainIdx].pt)
 
     b = np.array([u_prime, v_prime, x_prime, y_prime, p_prime, q_prime])
-    a = np.array([[u, 0, x, 0, p, 0],
-                 [v, 0, y, 0, q, 0],
-                 [1, 0, 1, 0, 1, 0],
-                 [0, u, 0, x, 0, p],
-                 [0, v, 0, y, 0, q],
-			     [0, 1, 0, 1, 0, 1]])
-    transform = np.linalg.solve(a,b)
+    a = np.array([[u, v, 1, 0, 0, 0],
+                  [0, 0, 0, u, v, 1],
+                  [x, y, 1, 0, 0, 0],
+                  [0, 0, 0, x, y, 1],
+                  [p, q, 1, 0, 0, 0],
+                  [0, 0, 0, p, q, 1]])
+
+    # a = np.array([[u, 0, x, 0, p, 0],
+    #              [v, 0, y, 0, q, 0],
+    #              [1, 0, 1, 0, 1, 0],
+    #              [0, u, 0, x, 0, p],
+    #              [0, v, 0, y, 0, q],
+	# 	           [0, 1, 0, 1, 0, 1]])
+    try:
+        a, b, c, d, e, f = np.linalg.solve(a, b)
+    except np.linalg.LinAlgError:
+        print "Fail whale: " + str((match1, match2, match3))
+        print ((u,v), (u_prime, v_prime))
+        print ((x,y), (x_prime, y_prime))
+        print ((p,q), (p_prime, q_prime))
+        return None
+    transform = np.array([[a, b, c],
+                         [d,  e, f]], dtype=np.float)
     return transform
 
 def get_image(filename):
@@ -620,19 +681,25 @@ def main():
 
 
     # 1c
-    transA_corners = find_corners(transA_R, 90, 20)
+    transA_corners = find_corners(transA_R, 50, 10)
+    print "transA corners " + str(len(transA_corners))
     transA_out = draw_corners(transA, transA_corners)
     norm_and_write_image(transA_out, "ps5-1-c-1.png")
 
-    transB_corners = find_corners(transB_R, 90, 20)
+    transB_corners = find_corners(transB_R, 50, 10)
+    print "transB corners " + str(len(transB_corners))
     transB_out = draw_corners(transB, transB_corners)
     norm_and_write_image(transB_out, "ps5-1-c-2.png")
 
-    simA_corners = find_corners(simA_R, 90, 20)
+    simA_corners = find_corners(simA_R, 40, 5)
+    print "simA corners " + str(len(simA_corners))
+
     simA_out = draw_corners(simA, simA_corners)
     norm_and_write_image(simA_out, "ps5-1-c-3.png")
 
-    simB_corners = find_corners(simB_R, 90, 20)
+    simB_corners = find_corners(simB_R, 40, 5)
+    print "simB corners " + str(len(simB_corners))
+
     simB_out = draw_corners(simB, simB_corners)
     norm_and_write_image(simB_out, "ps5-1-c-4.png")
 
@@ -685,26 +752,56 @@ def main():
      # 3a
     # TODO: Compute translation vector using RANSAC for (transA, transB) pair, draw biggest consensus set
     translation, matchSets = compute_translation_RANSAC(transA_kp, transB_kp, trans_matches, 20)
+    print "translation"
+    print translation
+    print len(trans_matches)
+    print len(matchSets)
     ransac_trans_match = draw_matches(transA, transB, transA_kp, transB_kp, matchSets)
     write_image(ransac_trans_match, "ps5-3-a-1.png")
 
     # 3b
     # TODO: Compute similarity transform for (simA, simB) pair, draw biggest consensus set
-    similartity, matchSets = compute_similarity_RANSAC(simA_kp, simB_kp, sim_matches, 10)
-    print similartity
+    sim_matrix, matchSets = compute_similarity_RANSAC(simA_kp, simB_kp, sim_matches, 10, 20)
+    print "sim matrix"
+    print sim_matrix
+    print len(sim_matches)
+    print len(matchSets)
     ransac_sim_match = draw_matches(simA, simB, simA_kp, simB_kp, matchSets)
     write_image(ransac_sim_match, "ps5-3-b-1.png")
     # # Extra credit: 3c, 3d, 3e
 
 
     #3c
-    # similartity, matchSets = compute_affine_RANSAC(simA_kp, simB_kp, sim_matches, 20)
-    # print similartity
-    # ransac_sim_match = draw_matches(simA, simB, simA_kp, simB_kp, matchSets)
-    # write_image(ransac_sim_match, "ps5-3-c-2.png")
+    affine_matrix, matchSets = compute_affine_RANSAC(simA_kp, simB_kp, sim_matches, 10, 14)
+    print "affine matrix"
+    print affine_matrix
+    print sim_matrix
+    print len(sim_matches)
+    print len(matchSets)
+    ransac_sim_match = draw_matches(simA, simB, simA_kp, simB_kp, matchSets)
+    write_image(ransac_sim_match, "ps5-3-c-2.png")
 
     #3d
-#    cv2.warp
+
+    # sim_matrix = np.array([[0.94355048,  -0.33337659,  56.75110304],
+    #                        [0.33337659,   0.94355048, -67.81053724]])
+    # simB = cv2.imread(os.path.join(input_dir, "simB.jpg"), cv2.IMREAD_GRAYSCALE).astype(np.uint8)
+    # simA = cv2.imread(os.path.join(input_dir, "simA.jpg"), cv2.IMREAD_GRAYSCALE).astype(np.uint8)
+    rand = np.zeros((simB.shape[0], simB.shape[1]))
+    out_warp  = cv2.invertAffineTransform(sim_matrix)
+    warped_image = cv2.warpAffine(simB.astype(np.uint8),out_warp, (simB.shape[1], simB.shape[0]), flags=cv2.INTER_LINEAR)
+    write_image(warped_image, "sim_warped_simB.png")
+    merged = cv2.merge((rand.astype(np.uint8),warped_image.astype(np.uint8),simA.astype(np.uint8)))
+    write_image(merged, "ps5-3-d-1.png")
+
+
+    out_warp  = cv2.invertAffineTransform(affine_matrix)
+    warped_image = cv2.warpAffine(simB.astype(np.uint8),out_warp, (simB.shape[1], simB.shape[0]), flags=cv2.INTER_LINEAR)
+    write_image(warped_image, "affine_warped_simB.png")
+    merged = cv2.merge((rand.astype(np.uint8),warped_image.astype(np.uint8),simA.astype(np.uint8)))
+    write_image(merged, "ps5-3-e-1.png")
+
+
 
 if __name__ == "__main__":
     main()
