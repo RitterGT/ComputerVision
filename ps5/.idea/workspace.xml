@@ -23,13 +23,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ps5-2-b-1.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/output/ps5-2-b-1.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="ps5-2-b-2.png" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/output/ps5-2-b-2.png">
           <provider selected="true" editor-type-id="images">
@@ -82,11 +75,18 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="ps5-3-d-2.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output/ps5-3-d-2.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="ps5.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ps5.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.43589744">
-              <caret line="790" column="40" selection-start-line="790" selection-start-column="40" selection-end-line="790" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.64102566">
+              <caret line="798" column="121" selection-start-line="798" selection-start-column="121" selection-end-line="798" selection-end-column="121" />
               <folding>
                 <element signature="e#44#62#0" expanded="true" />
               </folding>
@@ -117,7 +117,7 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="79" />
+    <option name="x" value="-55" />
     <option name="y" value="23" />
     <option name="width" value="1466" />
     <option name="height" value="873" />
@@ -373,7 +373,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="79" y="23" width="1466" height="873" extended-state="0" />
+    <frame x="-55" y="23" width="1466" height="873" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -384,7 +384,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21759892" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2375622" sideWeight="0.494543" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2375622" sideWeight="0.494543" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2375622" sideWeight="0.50545704" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -584,12 +584,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-3-d-1.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-3-a-1.png">
+    <entry file="file://$PROJECT_DIR$/output/ps5-3-c-2.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
@@ -599,7 +594,7 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/ps5-3-c-2.png">
+    <entry file="file://$PROJECT_DIR$/output/ps5-3-a-1.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
@@ -609,10 +604,20 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/output/ps5-3-d-2.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/ps5-3-d-1.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ps5.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43589744">
-          <caret line="790" column="40" selection-start-line="790" selection-start-column="40" selection-end-line="790" selection-end-column="40" />
+        <state vertical-scroll-proportion="0.64102566">
+          <caret line="798" column="121" selection-start-line="798" selection-start-column="121" selection-end-line="798" selection-end-column="121" />
           <folding>
             <element signature="e#44#62#0" expanded="true" />
           </folding>
