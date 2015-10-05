@@ -282,18 +282,6 @@ def match_descriptors(desc1, desc2, maxResults = None):
         matches = matches[:maxResults]
 
 
-    # create BFMatcher object
-    # bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
-    # matches = bf.knnMatch(desc1, desc2, k=2)
-    #
-    # # Apply ratio test
-    # good = []
-    # for m,n in matches:
-    #     # print m
-    #     if m.distance < 0.95*n.distance:
-    #         good.append(m)
-
-
     # TODO: Your code here
     # Note: You can use OpenCV's descriptor matchers, or roll your own!
     return matches
@@ -387,69 +375,6 @@ def compute_translation_RANSAC(kp1, kp2, matches, threshold = 20):
     return maxKey, buckets[maxKey]
 
 
-# def compute_similarity_RANSAC(kp1, kp2, matches, threshold = 20):
-#     """Compute best similarity transform using RANSAC given keypoint matches.
-#
-#     Parameters
-#     ----------
-#         kp1: list of keypoints (cv2.KeyPoint objects) found in image1
-#         kp2: list of keypoints (cv2.KeyPoint objects) found in image2
-#         matches: list of matches (as cv2.DMatch objects)
-#
-#     Returns
-#     -------
-#         transform: similarity transform matrix, NumPy array of shape (2, 3)
-#         good_matches: consensus set of matches that agree with this transform
-#     """
-#
-#     # TODO: Your code here
-#     # for each pair of matches, compute a tranform, add to a dict
-#
-#
-#     # for each pair of matches, compute the transform - for each bucket, calculate the distance, increment if 'close'
-#
-#     buckets = {}
-#     maxValue = 0
-#     maxKey = None
-#
-#     for pair in itertools.product(matches, repeat=2):
-#         if pair[0] == pair[1]:
-#             continue
-#
-#         transform = tuple(map(tuple, calc_transform_similarity(pair, kp1, kp2)))
-#
-#         #put each transform into a bucket.
-#         if buckets.get(transform) is None:
-#             buckets[transform] = []
-#             buckets[transform].append(pair)
-#
-#     for pair in itertools.product(matches, repeat=2):
-#         if pair[0] == pair[1]:
-#             continue
-#
-#         transform = calc_transform_similarity(pair, kp1, kp2)
-#         for key in buckets.keys():
-#             if np.linalg.norm(np.array(key) - transform) < threshold:
-#                 buckets[key].append(pair)
-#                 if len(buckets[key]) > maxValue:
-#                     maxValue = len(buckets[key])
-#                     maxKey = key
-#
-#     # #return translation, good_matches
-#     # a = maxKey[0]
-#     # b = maxKey[1]
-#     # c = maxKey[2]
-#     # d = maxKey[3]
-#     # similarity_transform = np.array([[a, -b, c],[b, a, d]])
-#     matches = []
-#
-#     for pair in buckets[maxKey]:
-#         matches.append(pair[0])
-#         matches.append(pair[1])
-#
-#     return maxKey, matches
-
-
 def compute_similarity_RANSAC(kp1, kp2, matches, threshold = 20, maxConsensus = 15):
 
     np.random.shuffle(matches)
@@ -482,7 +407,7 @@ def compute_similarity_RANSAC(kp1, kp2, matches, threshold = 20, maxConsensus = 
                     maxValue = consensusCount
                     maxKey = key
                     maxTransform = transform
-                    print "New Max Sim: " + str(consensusCount)
+                    # print "New Max Sim: " + str(consensusCount)
 
         if consensusCount > maxConsensus:
             break
@@ -494,9 +419,9 @@ def compute_similarity_RANSAC(kp1, kp2, matches, threshold = 20, maxConsensus = 
     # d = maxKey[3]
     # similarity_transform = np.array([[a, -b, c],[b, a, d]])
     matches = buckets[maxKey]
-    print "MATCHES:"
-    print matches
-    print len(matches)
+    # print "MATCHES:"
+    # print matches
+    # print len(matches)
 
     return maxTransform, matches
 
@@ -576,7 +501,7 @@ def compute_affine_RANSAC(kp1, kp2, matches, threshold = 20, maxConsensus = 15):
                     maxValue = consensusCount
                     maxKey = key
                     maxTransform = transform
-                    print "New Max Affine: " + str(consensusCount)
+                    # print "New Max Affine: " + str(consensusCount)
 
         if consensusCount > maxConsensus:
             break
@@ -619,10 +544,10 @@ def calc_transform_affine(triple, kp1, kp2):
     try:
         a, b, c, d, e, f = np.linalg.solve(a, b)
     except np.linalg.LinAlgError:
-        print "Fail whale: " + str((match1, match2, match3))
-        print ((u,v), (u_prime, v_prime))
-        print ((x,y), (x_prime, y_prime))
-        print ((p,q), (p_prime, q_prime))
+        # print "Fail whale: " + str((match1, match2, match3))
+        # print ((u,v), (u_prime, v_prime))
+        # print ((x,y), (x_prime, y_prime))
+        # print ((p,q), (p_prime, q_prime))
         return None
     transform = np.array([[a, b, c],
                          [d,  e, f]], dtype=np.float)
@@ -739,7 +664,7 @@ def main():
     transA_desc = get_descriptors(transA, transA_kp)
     transB_desc = get_descriptors(transB, transB_kp)
     trans_matches = match_descriptors(transA_desc, transB_desc)
-    print trans_matches
+    # print trans_matches
     trans_matched = draw_matches(transA, transB, transA_kp, transB_kp, trans_matches)
     write_image(trans_matched, "ps5-2-b-1.png")
 
