@@ -70,8 +70,6 @@ def gradientY(image, naive=False):
                     [0, 0, 0],
                     [1, 2, 1]], dtype=np.float64)
         kernel /= 8
-        print 'kernel'
-        print kernel
         ret = cv2.filter2D(image, -1, kernel)
 
         return ret
@@ -288,20 +286,19 @@ def warp(image, U, V):
     # TODO: Your code here
     warped = np.zeros(image.shape)
 
-    print 'HERE'
-    print image.shape
     warped[0] = image[0]
     for y in range(0, image.shape[0]):
         for x in range(0, image.shape[1]):
             try:
                 warped[y][x] = image[y + V[y, x]][x + U[y, x]]
             except:
-                print "whoops"
+                do = 1
+               # print "whoops"
     return warped
 
 
 
-def hierarchical_LK(A, B):
+def hierarchical_LK(A, B, sumWindow=31):
     """Compute optic flow using the Hierarchical Lucas-Kanade method.
 
     Parameters
@@ -316,22 +313,41 @@ def hierarchical_LK(A, B):
     """
     max_level = 4
     k = max_level
-    while k > 0:
-        for i in range (0,k):
-            Ak = reduce(A)
-            Bk = reduce(B)
-            if k == max_level:
-                U = np.zeroes(Ak.shape)
-                V = np.zeros(Ak.shape)
-            else:
-                U = 2*expand(U)
-                V = 2*expand(V)
-            ck = warp(Bk, U, B)
-            dx, dy = hierarchical_LK(Ak, ck)
-            U = U + dx
-            V = V + dy
-            k-=1
-    return U V
+
+    gy_pyr_a = gaussian_pyramid(A, k)
+    gy_pyr_b = gaussian_pyramid(B, k)
+
+    U = None
+    V = None
+    for i in reversed(range(0,k)):
+        print i
+        print k
+        Ak = gy_pyr_a[i]
+        Bk = gy_pyr_b[i]
+        print Ak.shape
+        print Bk.shape
+
+        if i == k - 1:
+            print "max level"
+            U = np.zeros(Ak.shape)
+            V = np.zeros(Ak.shape)
+        else:
+            print "at level" + str(i)
+            print "init U shape: " + str(U.shape)
+            print "init V shape: " + str(V.shape)
+
+            U = 2*expand(U)
+            V = 2*expand(V)
+        Ck = warp(Bk, U, V)
+        dx, dy = optic_flow_LK(Ak, Ck, sumWindow, True)
+        print "dx, dy shapes:" + str(dx.shape) +  "  " + str(dy.shape)
+        U = U + dx
+        V = V + dy
+
+        print "U shape: " + str(U.shape)
+        print "V shape: " + str(V.shape)
+
+    return U, V
 
     # TODO: Your code here
     # return U, V
@@ -369,6 +385,7 @@ def make_pair_and_quiver(U, V, preFix, scale=5):
             cv2.arrowedLine(img_out, (x, y), (x + int(U[y, x] * scale), y + int(V[y, x] * scale)), color, 1, tipLength=.3)
 
     write_image(img_out, preFix + " - quiver.png")
+    return im_color
 
 def pair_images(img_list):
     original = img_list[0]
@@ -406,7 +423,7 @@ def main():
     #two_a()
 
     # # 3a
-    three_a()
+    #three_a()
 
     #testWarp()
     four_a()
@@ -493,20 +510,30 @@ def three_a():
     #
 def four_a():
     # 4a
-    Shift0 = cv2.imread(os.path.join(input_dir, 'TestSeq', 'ShiftR0.png'), 0) / 255.0
+    Shift0 = cv2.imread(os.path.join(input_dir, 'TestSeq', 'Shift0.png'), 0) / 255.0
     ShiftR10 = cv2.imread(os.path.join(input_dir, 'TestSeq', 'ShiftR10.png'), 0) / 255.0
     ShiftR20 = cv2.imread(os.path.join(input_dir, 'TestSeq', 'ShiftR20.png'), 0) / 255.0
     ShiftR40 = cv2.imread(os.path.join(input_dir, 'TestSeq', 'ShiftR40.png'), 0) / 255.0
-    U10, V10 = hierarchical_LK(Shift0, ShiftR10)  # TODO: implement this
-    U20, V20 = hierarchical_LK(Shift0, ShiftR20)
-    U40, V40 = hierarchical_LK(Shift0, ShiftR40)
+    U10, V10 = hierarchical_LK(Shift0, ShiftR10, 11)  # TODO: implement this
+    U20, V20 = hierarchical_LK(Shift0, ShiftR20, 31)
+    U40, V40 = hierarchical_LK(Shift0, ShiftR40, 61)
     # # TODO: Save displacement image pairs (U, V), stacked
     # # Hint: You can use np.concatenate()
     ShiftR10_warped = warp(ShiftR10, U10, V10)
     ShiftR20_warped = warp(ShiftR20, U20, V20)
     ShiftR40_warped = warp(ShiftR40, U40, V40)
 
-    
+
+    # img_out = np.vstack((np.hstack((U10, V10)), np.hstack((U20, V20)), np.hstack((U40, V40))))
+    # cv2.normalize(img_out, img_out, 0, 255, cv2.NORM_MINMAX)
+    # img_out = img_out.astype(np.uint8)
+    # im_color = cv2.applyColorMap(img_out, cv2.COLORMAP_JET)
+    # write_image(im_color, "TEST.png")
+
+    pair1 = make_pair_and_quiver(U10, V10, "4a_R10 ")
+    pair2 = make_pair_and_quiver(U20, V20, "4a_R20 ")
+    pair3 = make_pair_and_quiver(U40, V40, "4a_R40 ")
+    write_image(np.vstack((pair1, pair2, pair3)), "4a-stacked-pairs.png")
 
     # # TODO: Save difference between each warped image and original image (Shift0), stacked
     diff_10 = ShiftR10_warped - Shift0
