@@ -32,7 +32,6 @@ def gradientX(image, naive=False):
         for i in range(0, len(image)):
             for j in range(0, len(image[0])-1):
                 ret[i, j] = float(image[i, j+1]) - float(image[i, j])
-
         return ret
 
     else:
@@ -58,7 +57,6 @@ def gradientY(image, naive=False):
 
     if naive:
         ret = np.zeros(image.shape)
-
         for i in range(0,len(image)-1):
             for j in range(0, len(image[0])):
                 ret[i,j] = float(image[i+1, j]) - float(image[i, j])
@@ -311,7 +309,7 @@ def hierarchical_LK(A, B, sumWindow=31):
         U: raw displacement (in pixels) along X-axis, same size as image, floating-point type
         V: raw displacement (in pixels) along Y-axis, same size and type as U
     """
-    max_level = 4
+    max_level = 5
     k = max_level
 
     gy_pyr_a = gaussian_pyramid(A, k)
@@ -339,7 +337,7 @@ def hierarchical_LK(A, B, sumWindow=31):
             U = 2*expand(U)
             V = 2*expand(V)
         Ck = warp(Bk, U, V)
-        dx, dy = optic_flow_LK(Ak, Ck, sumWindow, True)
+        dx, dy = optic_flow_LK(Ak, Ck, sumWindow, False)
         print "dx, dy shapes:" + str(dx.shape) +  "  " + str(dy.shape)
         U = U + dx
         V = V + dy
@@ -514,9 +512,9 @@ def four_a():
     ShiftR10 = cv2.imread(os.path.join(input_dir, 'TestSeq', 'ShiftR10.png'), 0) / 255.0
     ShiftR20 = cv2.imread(os.path.join(input_dir, 'TestSeq', 'ShiftR20.png'), 0) / 255.0
     ShiftR40 = cv2.imread(os.path.join(input_dir, 'TestSeq', 'ShiftR40.png'), 0) / 255.0
-    U10, V10 = hierarchical_LK(Shift0, ShiftR10, 11)  # TODO: implement this
-    U20, V20 = hierarchical_LK(Shift0, ShiftR20, 31)
-    U40, V40 = hierarchical_LK(Shift0, ShiftR40, 61)
+    U10, V10 = hierarchical_LK(Shift0, ShiftR10, 9)  # TODO: implement this
+    U20, V20 = hierarchical_LK(Shift0, ShiftR20, 9)
+    U40, V40 = hierarchical_LK(Shift0, ShiftR40, 15)
     # # TODO: Save displacement image pairs (U, V), stacked
     # # Hint: You can use np.concatenate()
     ShiftR10_warped = warp(ShiftR10, U10, V10)
@@ -539,6 +537,12 @@ def four_a():
     diff_10 = ShiftR10_warped - Shift0
     diff_20 = ShiftR20_warped - Shift0
     diff_40 = ShiftR40_warped - Shift0
+
+    stackedDiff = np.vstack((diff_10, diff_20, diff_40))
+    cv2.normalize(stackedDiff, stackedDiff, 0, 255, cv2.NORM_MINMAX)
+    stackedDiff = stackedDiff.astype(np.uint8)
+    im_color = cv2.applyColorMap(stackedDiff, cv2.COLORMAP_JET)
+    norm_and_write_image(im_color, "ps6-4-a-2.png")
 
 
 
