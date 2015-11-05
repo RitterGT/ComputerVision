@@ -38,9 +38,9 @@ class ParticleFilter(object):
         self.weights = []
         for i in range(0,self.num_particles):
             #select a random (x,y)
-            self.particles.append((np.random.choice(frame.shape[1], 1), np.random.choice(frame.shape[0], 1)))
+            self.particles.append((np.random.choice(frame.shape[1], 1)[0], np.random.choice(frame.shape[0], 1)[0]))
             #init weights to be uniform
-            self.weights.append(1/self.num_particles)
+            self.weights.append(1.0/self.num_particles)
 
 
     def process(self, frame):
@@ -51,7 +51,12 @@ class ParticleFilter(object):
             frame: color BGR uint8 image of current video frame, values in [0, 255]
         """
         #sample particles based on weights
-        self.particles = np.random.choice(self.particles, self.num_particles, True, self.weights)
+        print self.particles
+        print self.num_particles
+        print self.weights
+
+
+        newParticles = np.random.choice(self.num_particles, self.num_particles, True, self.weights)
 
         #for each particle,
             #get frame centered at that point
