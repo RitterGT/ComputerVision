@@ -15,6 +15,7 @@ class ParticleFilter(object):
     """A particle filter tracker, encapsulating state, initialization and update methods."""
 
     def __init__(self, frame, template, **kwargs):
+        print "init particle filter"
         """Initialize particle filter object.
 
         Parameters
@@ -36,7 +37,7 @@ class ParticleFilter(object):
 
         #weights - same indicies as the particles (e.g. weight[3] applies to particles[3])
         self.weights = []
-        for i in range(0,self.num_particles):
+        for i in range(0, self.num_particles):
             #select a random (x,y)
             self.particles.append((np.random.choice(frame.shape[1], 1)[0], np.random.choice(frame.shape[0], 1)[0]))
             #init weights to be uniform
@@ -44,6 +45,7 @@ class ParticleFilter(object):
 
 
     def process(self, frame):
+        print "process frame particle filter"
         """Process a frame (image) of video and update filter state.
 
         Parameters
@@ -56,8 +58,18 @@ class ParticleFilter(object):
         print self.weights
 
 
-        newParticles = np.random.choice(self.num_particles, self.num_particles, True, self.weights)
+        newParticlesIndexes = np.random.choice(self.num_particles, self.num_particles, True, self.weights)
+        print "indexes"
+        print newParticlesIndexes
 
+        particleCopy = []
+        weightCopy = []
+        for dex in newParticlesIndexes:
+            particleCopy.append(self.particles[dex])
+            weightCopy.append(self.weights[dex])
+
+        self.particles = particleCopy
+        self.weights = weightCopy
         #for each particle,
             #get frame centered at that point
             #calc MSE with the template
@@ -67,24 +79,34 @@ class ParticleFilter(object):
             #add noise to x, add noise to y
         #normalize all weights by amount added
 
-        amountAdded = 0
+        print 'PARTICLES BEFORE'
+        print self.particles
+        amountAdded = 0.0
         for i in range(0, self.num_particles):
-
-            patch = get_patch(frame, self.particles[i])
+            patch = get_patch(frame, self.particles[i], self.template.shape)
             MSE = calc_mse(self.template, patch)
             self.weights[i] += MSE
             amountAdded += MSE
             noise1 = np.random.normal(0, self.sigma, 1)
             noise2 = np.random.normal(0, self.sigma, 1)
-            self.particles[i][0] += noise1
-            self.particles[i][1] += noise2
+            print self.particles[i][0]
+            print self.particles[i][1]
 
-        self.weights /= amountAdded
+            self.particles[i] = tuple((int(self.particles[i][0]+ noise1[0]), int(self.particles[i][1] + noise2[0])))
 
+        #self.weights /= amountAdded
+        print 'WEIGHT SUM AFTER'
+        print sum(self.weights)
+        temp = sum(self.weights)
+        self.weights /= temp
+        print self.weights
+        print 'PARTICLES AFTER'
+        print self.particles
 
         pass  # TODO: Your code here - use the frame as a new observation (measurement) and update model
 
     def render(self, frame_out):
+        print "render particle filter"
         """Visualize current particle filter state.
 
         Parameters
@@ -92,22 +114,36 @@ class ParticleFilter(object):
             frame_out: copy of frame to overlay visualization on
         """
         # Note: This may not be called for all frames, so don't do any model updates here!
+        for particle in self.particles:
+            cv2.circle(frame_out, particle, 2, (0,255,0))
         pass  # TODO: Your code here - draw particles, tracking window and a circle to indicate spread
 
 
 def get_patch(frame, particle, shape_needed):
+    print "get patch"
     #upper left point (ish)
+    print particle
+    print shape_needed
     upperLeft = particle - np.array(shape_needed)/2
-    y = upperLeft[1]
-    x = upperLeft[0]
-    h = shape_needed[1]
-    w = shape_needed[0]
+    y = upperLeft[0]
+    x = upperLeft[1]
+    h = shape_needed[0]
+    w = shape_needed[1]
 
+    return frame[y:y + h, x:x + w]
 
-    frame[y:y + h, x:x + w]
 
 def calc_mse(template, patch):
-    return ((template - patch) ** 2).mean(axis=None)
+    print "Calc mse"
+    print template
+    print patch
+
+
+    if template.shape != patch.shape:
+        print 'out of bounds'
+        return 1000.0
+    else:
+        return ((template - patch) ** 2).mean(axis=None)
 
 class AppearanceModelPF(ParticleFilter):
     """A variation of particle filter tracker that updates its appearance model over time."""
@@ -175,6 +211,7 @@ def run_particle_filter(pf_class, video_filename, template_rect, save_frames={},
             if not okay:
                 print "BREAKING"
                 break  # no more frames, or can't read video
+            frame = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
 
             # Extract template and initialize (one-time only)
             if template is None:
